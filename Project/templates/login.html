@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Centered Text</title>
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+        }
+
+        .centered-text {
+            text-align: center;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .small-text {
+            font-size: 14px;
+            color: black;
+        }
+
+        .error-message {
+            color: red;
+            margin-top: 5px;
+        }
+
+        .flash-message {
+            font-weight: bold;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .flash-message.error {
+            color: red;  /* Red color for error messages */
+        }
+    </style>
+</head>
+
+<body>
+    <form id="LoginForm" action="{{ url_for('login') }}" method="POST" novalidate>
+        <h1 class="centered-text">Login</h1>
+        {{ form.hidden_tag() }}
+
+        <!-- Display flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <p>
+            {{ form.username.label }} <br>
+            {{ form.username(size=32) }}
+        </p>
+
+        <p>
+            {{ form.password.label }} <br>
+            {{ form.password(size=32) }}
+            {% if form.errors.password %}
+                <span class="error-message">Invalid password entered.</span>
+            {% endif %}
+        </p>
+
+        <p>
+            {{ form.remember_me.label }} {{ form.remember_me }}
+        </p>
+
+        <button type="submit" onclick="storeInfo()">Login</button>
+
+        {% if form.errors.username %}
+            <span class="error-message">Invalid username entered.</span>
+        {% endif %}
+
+        <p class="small-text">Don't have an account?</p>
+        <a href="{{ url_for('createaccount') }}" class="small-text">Create Account</a>
+    </form>
+</body>
+</html>
+{% endblock %}

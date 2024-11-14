@@ -1,0 +1,219 @@
+<html>
+    <head> 
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block title %}My Notes{% endblock %}</title>
+
+        <style>
+            :root { 
+                --background: #FFFFFF;
+                --background-light: #FFFFFF;
+                --accent: #c29421;
+                --text-dark: #000000;
+                --text-light: #000000; 
+                --line-border: rgba(0, 0, 0, 0.5);
+                --translucent: rgba(0, 0, 0, 0.1);
+                --small-font: 14px;
+            }
+
+            /* General styling */
+            body {
+                color: var(--text-light);
+                background-color: var(--background);
+            }
+    
+            #app-container {
+                display: flex;
+                flex-direction: column;
+            }
+    
+            #main-container {
+                display: flex;
+                width: 100vw;
+            }
+    
+            #sidebar {   
+                background-color: var(--background-light);
+                max-width: 275px;
+            }
+    
+            #main-content {
+                color: var(--text-dark);
+                background-color: var(--background-light);
+                flex: 1;
+                overflow: auto;
+                height: 100vh;
+                padding: 10px;
+            }
+
+            #second-content {
+                display: none;
+                color: var(--text-dark); 
+                background-color: var(--background-light);
+                flex: 1;
+                overflow: auto;
+                height: 100vh;
+                padding: 10px;
+                border-left: 2px dotted var(--line-border);
+            }
+
+            .column {
+                width: 17vw;
+                height: 100vh;
+                padding: 10px;
+                overflow-y: auto;
+            }
+
+            form {
+                margin: 10px;
+            }
+
+            /* Pill-box styling */
+            .pill-box {
+                cursor: pointer;
+                height: 30px;
+                max-width: 100%;
+                border-radius: 20px; 
+                padding-left: 15px;
+                padding-right: 15px;
+                margin-bottom: 10px;
+                text-align: left;
+                line-height: 30px;   
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                background-color: var(--background-light);
+                color: var(--text-dark);
+            }
+
+            .pill-box:active {
+                opacity: 0.7;
+            }
+
+            select.pill-box {
+                border: none;
+                background-color: rgba(0, 0, 0, 0);
+                padding-left: 0px;
+                padding-right: 0px;
+            }
+
+            select:focus.pill-box {
+                outline: none;      
+            }
+
+            a.pill-box {
+                display: block; 
+                text-decoration: none;
+                color: inherit; 
+            }
+
+            .pill-box.folder.outline {
+                outline: 2px solid var(--accent);
+                font-weight: bold;    
+            }
+
+            /* Hotbar styling */
+            .hotbar {
+                display: flex;
+                background-color: var(--background-light);
+                width: 100%;
+                height: 30px;
+                border-bottom: 1px solid var(--line-border);
+                margin-bottom: 10px;
+                padding-bottom: 10px;
+                justify-content: space-between;
+                line-height: 30px;   
+            }
+
+            a.hotbar-button {
+                cursor: pointer;
+                color: var(--text-light);
+                background-color: var(--text-dark);
+                height: 20px;
+                width: fit-content;
+                margin: 5px;
+                line-height: 20px;  
+            }
+
+            #hotbar-options {
+                display: flex;
+                width: fit-content;
+            }
+
+            /* Directory colors */
+            .note, .folder {
+                background-color: var(--background-light);
+                color: var(--text-dark);
+            }
+    
+            #notes-directory {
+                background-color: var(--background-light);      
+            }
+
+            #full-directory-folder { 
+                background-color: var(--accent);
+                outline: 2px solid var(--accent);
+                font-weight: bold;    
+            }
+
+            /* Button styling */
+            #sort-by-button,
+            #new-folder-container,
+            #new-folder-text-box,
+            #new-folder-button,
+            #split-view-button-1,
+            #split-view-button-2,
+            #logout-button a,
+            #create-note-button,
+            #save-note-button,
+            #delete-note-button,
+            #transcription-button-1,
+            #transcription-button-2 {
+                color: var(--text-dark);
+                background-color: var(--translucent);
+            }
+
+            .icon-button {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                scale: 105%;
+                background-color: transparent;
+                cursor: pointer;
+                width: 30px;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: unset;
+                border: none;
+            }
+
+            textarea.note-body {
+                resize: none; 
+                background-color: var(--background-light);
+                color: var(--text-dark);
+                font: inherit;
+                width: 100%;
+                height: 100%;
+                border: none;
+                padding-top: 15px;
+                padding-left: 15px;
+                padding-right: 15px;
+            }
+
+            textarea.note-body:focus, input:focus {
+                outline: none;
+            }
+        </style>
+    </head>
+    <body>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <ul>
+                {% for message in messages %}
+                    <li>{{ message }} </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        {% endwith %}
+        {% block content %} {% endblock %}
+    </body>
+</html>

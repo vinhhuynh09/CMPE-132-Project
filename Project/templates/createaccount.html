@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}Create Account{% endblock %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Centered Text</title>
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+        }
+
+        .centered-text {
+            text-align: center;
+            padding: 20px;
+            color: #000000;
+        }
+
+        .small-text {
+            font-size: 14px;
+        }
+
+        .error-message {
+            color: red;
+            margin-top: 5px;
+        }
+
+        .button-container {
+            margin-top: 20px;
+        }
+
+        .cancel-button {
+            margin-left: 10px;
+        }
+
+        .flash-message {
+            color: red;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .success-message {
+            color: green;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+{% for message in get_flashed_messages(with_categories=true) %}
+    {% if message[0] == 'error' %}
+        <div class="flash-message">{{ message[1] }}</div>
+    {% elif message[0] == 'success' %}
+        <div class="success-message">{{ message[1] }}</div>
+    {% endif %}
+{% endfor %}
+
+<form action="" method="POST" novalidate>
+    <h1 class="centered-text">Create Account</h1>
+    {{ form.hidden_tag() }}
+
+    <p>{{ form.name.label }} <br>
+       {{ form.name(size=32) }}</p>
+
+    <p>{{ form.email.label }} <br>
+       {{ form.email(size=32) }}
+       {% if 'email' in form.errors %}
+           <span class="error-message">Invalid email format. Please enter a valid email address.</span>
+       {% endif %}
+    </p>
+
+    <p>{{ form.username.label }} <br>
+       {{ form.username(size=32) }}</p>
+
+    <p>{{ form.password.label }} <br>
+       {{ form.password(size=32) }}</p>
+
+    <p>{{ form.confirm.label }} <br>
+       {{ form.confirm(size=32) }}
+       {% if 'confirm' in form.errors %}
+           <span class="error-message">Passwords do not match. Please make sure the passwords match.</span>
+       {% endif %}
+    </p>
+
+    <p>{{ form.role.label }} <br>
+       {{ form.role() }}
+       {% if 'role' in form.errors %}
+           <span class="error-message">Please select a role.</span>
+       {% endif %}
+    </p>
+
+    <div class="button-container">
+        <p>{{ form.submit() }}</p>
+        <a href="/"><button type="button" class="cancel-button">Cancel</button></a>
+    </div>
+</form>
+
+{% endblock %}
