@@ -1,5 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,53 +13,41 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            color: #333;
             text-align: center;
             margin: 0;
-            padding: 0;
+            padding: 20px;
         }
-        .container {
-            margin-top: 50px;
-        }
+
         h1 {
-            color: #2c3e50;
+            color: #333;
         }
-        .message {
-            background-color: #e74c3c;
-            color: white;
-            padding: 15px;
-            border-radius: 5px;
-            display: inline-block;
+
+        .nav {
             margin-top: 20px;
         }
-        a {
+
+        .nav a {
             text-decoration: none;
-            color: #3498db;
-            font-size: 16px;
+            color: blue;
+            margin: 0 10px;
         }
-        a:hover {
+
+        .nav a:hover {
             text-decoration: underline;
         }
     </style>
 </head>
+
 <body>
+    <h1>Welcome to the Library System</h1>
+    <p>Your role: {{ session.get('role', 'Guest') }}</p>
 
-    <div class="container">
-        <h1>Welcome to the Home Page!</h1>
-
-        {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                <div class="message">
-                    {% for message in messages %}
-                        <p>{{ message }}</p>
-                    {% endfor %}
-                </div>
-            {% endif %}
-        {% endwith %}
-
-        <p><a href="/">Go back to the login page</a></p>
+    <div class="nav">
+        <a href="/createaccount">Create Account</a>
+        <a href="/">Logout</a>
     </div>
-
 </body>
+
 </html>
+{% endblock %}
+
