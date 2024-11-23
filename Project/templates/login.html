@@ -1,91 +1,80 @@
-{% extends "base.html" %}
-
-{% block title %}Login{% endblock %}
-
-{% block content %}
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Centered Text</title>
+    <title>Login</title>
     <style>
-        body {
+        .container {
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            margin: 0;
-        }
-
-        .centered-text {
+            height: 100vh;
             text-align: center;
-            padding: 20px;
-            border-radius: 8px;
         }
 
-        .small-text {
-            font-size: 14px;
-            color: black;
+        .button-container {
+            margin-top: 20px;
         }
 
-        .error-message {
-            color: red;
-            margin-top: 5px;
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
         }
 
         .flash-message {
+            margin-top: 10px;
+            font-size: 14px;
             font-weight: bold;
-            margin-top: 20px;
-            text-align: center;
         }
 
-        .flash-message.error {
-            color: red;  /* Red color for error messages */
+        .success {
+            color: green;
+        }
+
+        .danger {
+            color: red;
         }
     </style>
 </head>
 
 <body>
-    <form id="LoginForm" action="{{ url_for('login') }}" method="POST" novalidate>
-        <h1 class="centered-text">Login</h1>
-        {{ form.hidden_tag() }}
-
-        <!-- Display flash messages -->
+    <div class="container">
+        <h1>Login</h1>
         {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="flash-message {{ category }}">{{ message }}</div>
-                {% endfor %}
-            {% endif %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="flash-message {{ category }}">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
         {% endwith %}
-
-        <p>
-            {{ form.username.label }} <br>
-            {{ form.username(size=32) }}
-        </p>
-
-        <p>
-            {{ form.password.label }} <br>
-            {{ form.password(size=32) }}
-            {% if form.errors.password %}
-                <span class="error-message">Invalid password entered.</span>
-            {% endif %}
-        </p>
-
-        <p>
-            {{ form.remember_me.label }} {{ form.remember_me }}
-        </p>
-
-        <button type="submit" onclick="storeInfo()">Login</button>
-
-        {% if form.errors.username %}
-            <span class="error-message">Invalid username entered.</span>
-        {% endif %}
-
-        <p class="small-text">Don't have an account?</p>
-        <a href="{{ url_for('createaccount') }}" class="small-text">Create Account</a>
-    </form>
+        <form action="{{ url_for('handle_login') }}" method="post">
+            {{ form.hidden_tag() }}
+            <p>
+                {{ form.username.label }}<br>
+                {{ form.username(size=32) }}
+            </p>
+            <p>
+                {{ form.password.label }}<br>
+                {{ form.password(size=32) }}
+            </p>
+            <p><button type="submit">Login</button></p>
+        </form>
+        <div class="button-container">
+            <a href="{{ url_for('createaccount') }}">
+                <button>Create Account</button>
+            </a>
+        </div>
+    </div>
 </body>
 </html>
-{% endblock %}
