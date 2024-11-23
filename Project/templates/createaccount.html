@@ -8,13 +8,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Centered Text</title>
+    <title>Create Account</title>
     <style>
         body {
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 0;
+            font-family: Arial, sans-serif;
         }
 
         .centered-text {
@@ -56,52 +57,70 @@
     </style>
 </head>
 
-{% for message in get_flashed_messages(with_categories=true) %}
-    {% if message[0] == 'error' %}
-        <div class="flash-message">{{ message[1] }}</div>
-    {% elif message[0] == 'success' %}
-        <div class="success-message">{{ message[1] }}</div>
-    {% endif %}
-{% endfor %}
+<body>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                {% if category == 'error' %}
+                    <div class="flash-message">{{ message }}</div>
+                {% elif category == 'success' %}
+                    <div class="success-message">{{ message }}</div>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
 
-<form action="" method="POST" novalidate>
-    <h1 class="centered-text">Create Account</h1>
-    {{ form.hidden_tag() }}
+    <form action="" method="POST" novalidate>
+        <h1 class="centered-text">Create Account</h1>
+        {{ form.hidden_tag() }}
 
-    <p>{{ form.name.label }} <br>
-       {{ form.name(size=32) }}</p>
+        <p>{{ form.name.label }} <br>
+           {{ form.name(size=32) }}
+           {% if form.name.errors %}
+               <span class="error-message">{{ form.name.errors[0] }}</span>
+           {% endif %}
+        </p>
 
-    <p>{{ form.email.label }} <br>
-       {{ form.email(size=32) }}
-       {% if 'email' in form.errors %}
-           <span class="error-message">Invalid email format. Please enter a valid email address.</span>
-       {% endif %}
-    </p>
+        <p>{{ form.email.label }} <br>
+           {{ form.email(size=32) }}
+           {% if form.email.errors %}
+               <span class="error-message">{{ form.email.errors[0] }}</span>
+           {% endif %}
+        </p>
 
-    <p>{{ form.username.label }} <br>
-       {{ form.username(size=32) }}</p>
+        <p>{{ form.username.label }} <br>
+           {{ form.username(size=32) }}
+           {% if form.username.errors %}
+               <span class="error-message">{{ form.username.errors[0] }}</span>
+           {% endif %}
+        </p>
 
-    <p>{{ form.password.label }} <br>
-       {{ form.password(size=32) }}</p>
+        <p>{{ form.password.label }} <br>
+           {{ form.password(size=32) }}
+           {% if form.password.errors %}
+               <span class="error-message">{{ form.password.errors[0] }}</span>
+           {% endif %}
+        </p>
 
-    <p>{{ form.confirm.label }} <br>
-       {{ form.confirm(size=32) }}
-       {% if 'confirm' in form.errors %}
-           <span class="error-message">Passwords do not match. Please make sure the passwords match.</span>
-       {% endif %}
-    </p>
+        <p>{{ form.confirm.label }} <br>
+           {{ form.confirm(size=32) }}
+           {% if form.confirm.errors %}
+               <span class="error-message">{{ form.confirm.errors[0] }}</span>
+           {% endif %}
+        </p>
 
-    <p>{{ form.role.label }} <br>
-       {{ form.role() }}
-       {% if 'role' in form.errors %}
-           <span class="error-message">Please select a role.</span>
-       {% endif %}
-    </p>
+        <p>{{ form.role.label }} <br>
+           {{ form.role() }}
+           {% if form.role.errors %}
+               <span class="error-message">{{ form.role.errors[0] }}</span>
+           {% endif %}
+        </p>
 
-    <div class="button-container">
-        <p>{{ form.submit() }}</p>
-        <a href="/"><button type="button" class="cancel-button">Cancel</button></a>
-    </div>
-</form>
-
+        <div class="button-container">
+            <p>{{ form.submit() }}</p>
+            <a href="/"><button type="button" class="cancel-button">Cancel</button></a>
+        </div>
+    </form>
+</body>
+</html>
 {% endblock %}
