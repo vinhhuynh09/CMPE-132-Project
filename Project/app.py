@@ -5,10 +5,14 @@ from wtforms import StringField, PasswordField, SelectField, BooleanField, Submi
 from flask_wtf import FlaskForm
 from wtforms.validators import DataRequired, EqualTo, Email, ValidationError
 
+# Initialize the Flask application
 app = Flask(__name__)
+
+# Configuration for the SQLite database and secret key
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///sjsul.db'
 app.config['SECRET_KEY'] = 'secure_key_here'
 
+# Initialize database and password hashing utility
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 
@@ -21,6 +25,7 @@ class User(db.Model):
     password = db.Column(db.String(255), nullable=False)
     role = db.Column(db.String(50), default="Member")
 
+    # String representation for debugging purposes
     def __repr__(self):
         return f"<User {self.username}>"
 
@@ -84,7 +89,7 @@ def createaccount():
             role=form.role.data
         )
 
-        # Add the user to the database
+        # Add the user to the database and commit changes
         db.session.add(user)
         db.session.commit()
 
@@ -95,6 +100,7 @@ def createaccount():
 
 @app.route('/home')
 def home():
+    # Check if user is logged in
     if 'user_id' not in session:
         flash('You need to log in to access this page.', 'warning')
         return redirect(url_for('login'))
