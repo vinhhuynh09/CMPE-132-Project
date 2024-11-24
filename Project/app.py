@@ -77,9 +77,16 @@ def handle_login():
 def createaccount():
     form = CreateAccountForm()
     if form.validate_on_submit():
-        # Hash the password
-        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        # Get the original password from the form
+        original_password = form.password.data
 
+        # Hash the password
+        hashed_password = bcrypt.generate_password_hash(original_password).decode('utf-8')
+
+        # Print the original password and the hashed password to the console (for debugging purposes)
+        print(f"Original password for {form.username.data}: {original_password}")
+        print(f"Hashed password for {form.username.data}: {hashed_password}")
+        
         # Create a new user object
         user = User(
             name=form.name.data,
