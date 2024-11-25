@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
-from wtforms import StringField, PasswordField, SelectField, BooleanField, SubmitField
+from wtforms import StringField, PasswordField, SelectField, SubmitField
 from flask_wtf import FlaskForm
 from wtforms.validators import DataRequired, EqualTo, Email, ValidationError
 
@@ -25,7 +25,6 @@ class User(db.Model):
     password = db.Column(db.String(255), nullable=False)
     role = db.Column(db.String(50), default="Member")
 
-    # String representation for debugging purposes
     def __repr__(self):
         return f"<User {self.username}>"
 
@@ -38,14 +37,9 @@ class CreateAccountForm(FlaskForm):
     ])
     username = StringField('Username', validators=[DataRequired(message="Username is required.")])
     password = PasswordField('Password', validators=[DataRequired(message="Password is required.")])
-    confirm = PasswordField('Confirm Password', validators=[DataRequired(message="Confirm Password is required.")])
+    confirm = PasswordField('Confirm Password', validators=[DataRequired(message="Confirm Password is required."), EqualTo('password', message="Passwords must match.")])
     role = SelectField('Role', choices=[('Admin', 'Admin'), ('Librarian', 'Librarian'), ('Member', 'Member')])
     submit = SubmitField('Create Account')
-
-    # custom validation for password confirmation
-    def validate_confirm(self, confirm):
-        if confirm.data != self.password.data:
-            raise ValidationError("Passwords do not match.")
 
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
@@ -77,16 +71,9 @@ def handle_login():
 def createaccount():
     form = CreateAccountForm()
     if form.validate_on_submit():
-        # Get the original password from the form
-        original_password = form.password.data
-
         # Hash the password
-        hashed_password = bcrypt.generate_password_hash(original_password).decode('utf-8')
+        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
 
-        # Print the original password and the hashed password to the console (for debugging purposes)
-        print(f"Original password for {form.username.data}: {original_password}")
-        print(f"Hashed password for {form.username.data}: {hashed_password}")
-        
         # Create a new user object
         user = User(
             name=form.name.data,
@@ -95,23 +82,43 @@ def createaccount():
             password=hashed_password,
             role=form.role.data
         )
-
-        # Add the user to the database and commit changes
         db.session.add(user)
         db.session.commit()
-
         flash('Account created successfully!', 'success')
         return redirect(url_for('login'))
-
     return render_template('createaccount.html', form=form)
 
 @app.route('/home')
 def home():
-    # Check if user is logged in
     if 'user_id' not in session:
         flash('You need to log in to access this page.', 'warning')
         return redirect(url_for('login'))
-    return render_template('home.html')
+    
+    # Authorization
+    role = session.get('role', 'Member')
+    if role == "Admin":
+        actions = ["Manage Users", "Add/Edit Books", "View Books", "Borrow Books"]
+    elif role == "Librarian":
+        actions = ["Add/Edit Books", "View Books", "Borrow Books"]
+    else:
+        actions = ["View Books", "Borrow Books"]
+
+    return render_template('home.html', role=role, actions=actions)
+
+@app.route('/delete_user', methods=['POST'])
+def delete_user():
+    if 'role' in session and session['role'] == 'Admin':
+        username_to_delete = request.form.get('username')
+        user_to_delete = User.query.filter_by(username=username_to_delete).first()
+        if user_to_delete:
+            db.session.delete(user_to_delete)
+            db.session.commit()
+            flash(f"User '{username_to_delete}' has been deleted successfully.", "success")
+        else:
+            flash(f"User '{username_to_delete}' not found.", "danger")
+    else:
+        flash("You are not authorized to perform this action.", "danger")
+    return redirect(url_for('home'))
 
 @app.route('/logout')
 def logout():
