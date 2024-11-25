@@ -22,6 +22,20 @@
             color: #333;
         }
 
+        h2 {
+            color: #555;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        ul li {
+            font-size: 18px;
+            margin: 10px 0;
+        }
+
         .nav {
             margin-top: 20px;
         }
@@ -40,10 +54,24 @@
 
 <body>
     <h1>Welcome to the Library System</h1>
-    <p>Your role: {{ session.get('role', 'Guest') }}</p>
+    <h2>Your Role: {{ role }}</h2>
+
+    <h2>Available Actions:</h2>
+    <ul>
+        {% for action in actions %}
+            <li>{{ action }}</li>
+        {% endfor %}
+    </ul>
 
     <div class="nav">
-        <a href="/createaccount">Create Account</a>
+        {% if role == 'Admin' %}
+            <a href="/createaccount">Create Account</a>
+            <form action="/delete_user" method="POST" style="display: inline;">
+                <label for="username">Delete User:</label>
+                <input type="text" name="username" placeholder="Enter username" required>
+                <button type="submit">Delete</button>
+            </form>
+        {% endif %}
         <a href="/">Logout</a>
     </div>
 </body>
